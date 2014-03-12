@@ -1,0 +1,1 @@
+web: gunicorn --pythonpath="$PWD/pingu" config.wsgi:application
