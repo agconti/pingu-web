@@ -6,10 +6,10 @@ from users.models import User
 class MatchSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
-        model: Match
+        model = Match
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
-        model: User
+        model = User

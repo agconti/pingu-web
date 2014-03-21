@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from core.models import Match
 from users.models import User
-from api.serializers import MatchSerializer
+from api.serializers import MatchSerializer, UserSerializer
 from rest_framework import viewsets
 
 # Create your views here.
