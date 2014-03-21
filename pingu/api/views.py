@@ -1,10 +1,8 @@
-from django.shortcuts import render
-from core.models import Match
+from core.models import Match, Score, Ranking
 from users.models import User
-from api.serializers import MatchSerializer, UserSerializer
+from api.serializers import MatchSerializer, UserSerializer, ScoreSerializer, RankingSerializer
 from rest_framework import viewsets
 
-# Create your views here.
 
 class MatchViewSet(viewsets.ModelViewSet):
     """
@@ -22,3 +20,21 @@ class UserViewSet(viewsets.ModelViewSet):
     """
     queryset = User.objects.all()
     serializer_class = UserSerializer
+
+
+class ScoreViewSet(viewsets.ModelViewSet):
+    """
+    This viewset automatically provides `list`, `create`, `retrieve`,
+    `update` and `destroy` actions.
+    """
+    queryset = Score.objects.all()
+    serializer_class = ScoreSerializer
+
+
+class RankingViewSet(viewsets.ModelViewSet):
+    """
+    This viewset automatically provides `list`, `create`, `retrieve`,
+    `update` and `destroy` actions.
+    """
+    queryset = Ranking.objects.all()
+    serializer_class = RankingSerializer
