@@ -22,9 +22,9 @@ except ImportError:
     pass
 
 from configurations import Configuration, values
+from memcacheify import memcacheify
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
-
 
 class Common(Configuration):
 
@@ -125,9 +125,7 @@ class Common(Configuration):
     ########## END DATABASE CONFIGURATION
 
     ########## CACHING
-    # Do this here because thanks to django-pylibmc-sasl and pylibmc memcacheify is painful to install on windows.
-    # memcacheify is what's used in Production
-    from memcacheify import memcacheify
+
 
     CACHES = memcacheify()
 
@@ -135,7 +133,7 @@ class Common(Configuration):
 
     ########## GENERAL CONFIGURATION
     # See: https://docs.djangoproject.com/en/dev/ref/settings/#time-zone
-    TIME_ZONE = 'America/Los_Angeles'
+    TIME_ZONE = 'America/New_York'
 
     # See: https://docs.djangoproject.com/en/dev/ref/settings/#language-code
     LANGUAGE_CODE = 'en-us'
