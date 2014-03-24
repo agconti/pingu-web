@@ -22,9 +22,9 @@ except ImportError:
     pass
 
 from configurations import Configuration, values
+from memcacheify import memcacheify
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
-
 
 class Common(Configuration):
 
@@ -124,9 +124,7 @@ class Common(Configuration):
     ########## END DATABASE CONFIGURATION
 
     ########## CACHING
-    # Do this here because thanks to django-pylibmc-sasl and pylibmc memcacheify is painful to install on windows.
-    # memcacheify is what's used in Production
-    from memcacheify import memcacheify
+
 
     CACHES = memcacheify()
 
@@ -398,10 +396,5 @@ class Production(Common):
         )),
     )
     ########## END TEMPLATE CONFIGURATION
-
-    ########## CACHING
-    # Only do this here because thanks to django-pylibmc-sasl and pylibmc memcacheify is painful to install on windows.
-    CACHES = values.CacheURLValue(default="memcached://127.0.0.1:11211")
-    ########## END CACHING
 
     ########## Your production stuff: Below this line define 3rd party libary settings
