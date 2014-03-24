@@ -3,6 +3,12 @@ pingu-web
 
 Ping Pong like never before...
 
+Dummy Account:
+
+* Username: dummy
+* Password: correct horse battery staple
+
+http://xkcd.com/936/
 
 LICENSE: BSD
 
