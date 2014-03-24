@@ -55,6 +55,7 @@ class Common(Configuration):
         'users',  # custom users app
         # Your stuff: custom apps go here
         "rest_framework",
+        'rest_framework.authtoken',
         'core',
         'api',
     )
@@ -400,8 +401,7 @@ class Production(Common):
     ########## END TEMPLATE CONFIGURATION
 
     ########## CACHING
-    # Only do this here because thanks to django-pylibmc-sasl and pylibmc memcacheify is painful to install on windows.
-    CACHES = values.CacheURLValue(default="memcached://127.0.0.1:11211")
+    ## Caching is now covered by saurab's memecache fix located in the commmon settings.
     ########## END CACHING
 
     ########## Your production stuff: Below this line define 3rd party libary settings
