@@ -9,12 +9,6 @@ class MatchSerializer(serializers.HyperlinkedModelSerializer):
         model = Match
 
 
-class UserSerializer(serializers.HyperlinkedModelSerializer):
-
-    class Meta:
-        model = User
-
-
 class ScoreSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
@@ -25,3 +19,14 @@ class RankingSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Ranking
+
+
+class UserSerializer(serializers.HyperlinkedModelSerializer):
+    match = MatchSerializer(many=True, read_only=True)
+    ranking = RankingSerializer(many=True, read_only=True)
+    auth_token = serializers.SlugRelatedField(read_only=True, slug_field='key')
+
+    class Meta:
+        model = User
+        fields = ('url', 'first_name', 'last_name',
+                  'username', 'auth_token')
