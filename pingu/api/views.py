@@ -3,6 +3,8 @@ from users.models import User
 from api.serializers import MatchSerializer, UserSerializer, ScoreSerializer, RankingSerializer
 from rest_framework import viewsets
 from rest_framework.authentication import TokenAuthentication, BasicAuthentication, SessionAuthentication
+from .permissions import IsSelf
+from rest_framework.permissions import IsAuthenticated
 
 
 class MatchViewSet(viewsets.ModelViewSet):
@@ -13,6 +15,7 @@ class MatchViewSet(viewsets.ModelViewSet):
     queryset = Match.objects.all()
     serializer_class = MatchSerializer
     authentication_classes = (TokenAuthentication, SessionAuthentication, BasicAuthentication)
+    permission_classes = (IsAuthenticated,)
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -23,7 +26,7 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     authentication_classes = (TokenAuthentication, SessionAuthentication, BasicAuthentication)
-
+    permission_classes = (IsSelf,)
 
 
 class ScoreViewSet(viewsets.ModelViewSet):
@@ -34,6 +37,7 @@ class ScoreViewSet(viewsets.ModelViewSet):
     queryset = Score.objects.all()
     serializer_class = ScoreSerializer
     authentication_classes = (TokenAuthentication, SessionAuthentication, BasicAuthentication)
+    permission_classes = (IsAuthenticated,)
 
 
 class RankingViewSet(viewsets.ModelViewSet):
@@ -44,3 +48,4 @@ class RankingViewSet(viewsets.ModelViewSet):
     queryset = Ranking.objects.all()
     serializer_class = RankingSerializer
     authentication_classes = (TokenAuthentication, SessionAuthentication, BasicAuthentication)
+    permission_classes = (IsAuthenticated,)
