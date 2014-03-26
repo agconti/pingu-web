@@ -48,14 +48,14 @@ class Common(Configuration):
         'south',  # Database migration helpers:
         'crispy_forms',  # Form layouts
         'avatar',  # for user avatars
+        "rest_framework", # for restful api
+        'rest_framework.authtoken', # for token authentication
     )
 
     # Apps specific for this project go here.
     LOCAL_APPS = (
         'users',  # custom users app
         # Your stuff: custom apps go here
-        "rest_framework",
-        'rest_framework.authtoken',
         'core',
         'api',
     )

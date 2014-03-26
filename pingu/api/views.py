@@ -4,7 +4,7 @@ from api.serializers import MatchSerializer, UserSerializer, ScoreSerializer, Ra
 from rest_framework import viewsets
 from rest_framework.authentication import TokenAuthentication, BasicAuthentication, SessionAuthentication
 from .permissions import IsSelf
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 
 
 class MatchViewSet(viewsets.ModelViewSet):
@@ -26,7 +26,7 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     authentication_classes = (TokenAuthentication, SessionAuthentication, BasicAuthentication)
-    permission_classes = (IsSelf,)
+    permission_classes = (AllowAny,)
 
 
 class ScoreViewSet(viewsets.ModelViewSet):
