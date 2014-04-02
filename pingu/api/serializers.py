@@ -16,9 +16,12 @@ class ScoreSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class RankingSerializer(serializers.HyperlinkedModelSerializer):
+    match = MatchSerializer(read_only=True)
 
     class Meta:
         model = Ranking
+        fields = ('player', 'elo_rating', 'best_score', 'worst_score',
+                  'heighest_ranking', 'match')
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -28,5 +31,5 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = User
-        fields = ('url', 'first_name', 'last_name',
+        fields = ('url', 'first_name', 'last_name', 'match', 'ranking',
                   'username', 'auth_token')

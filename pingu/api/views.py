@@ -49,3 +49,10 @@ class RankingViewSet(viewsets.ModelViewSet):
     serializer_class = RankingSerializer
     authentication_classes = (TokenAuthentication, SessionAuthentication, BasicAuthentication)
     permission_classes = (IsAuthenticated,)
+
+    def post(self, request):
+        serializer = RankingSerializer(request.DATA)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"msg": "Ranking Updated."}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
