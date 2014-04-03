@@ -1,10 +1,13 @@
 from core.models import Match, Score, Ranking
 from users.models import User
 from api.serializers import MatchSerializer, UserSerializer, ScoreSerializer, RankingSerializer
-from rest_framework import viewsets
+from django.db import IntegrityError
+from rest_framework import mixins, generics, status, viewsets
 from rest_framework.authentication import TokenAuthentication, BasicAuthentication, SessionAuthentication
-from .permissions import IsSelf
+from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated, AllowAny
+from .authentication import UnsafeSessionAuthentication
+from .permissions import IsSelf
 
 
 class MatchViewSet(viewsets.ModelViewSet):
@@ -18,15 +21,68 @@ class MatchViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated,)
 
 
-class UserViewSet(viewsets.ModelViewSet):
+class UserList(mixins.CreateModelMixin, generics.GenericAPIView):
     """
-    This viewset automatically provides `list`, `create`, `retrieve`,
-    `update` and `destroy` actions.
+    This view generates a list of users and upon posting.
     """
     queryset = User.objects.all()
+    authentication_classes = (UnsafeSessionAuthentication,)
     serializer_class = UserSerializer
-    authentication_classes = (TokenAuthentication, SessionAuthentication, BasicAuthentication)
     permission_classes = (AllowAny,)
+
+    def post(self, request):
+        serializer = CreateUserSerializer(data=request.DATA)
+        if serializer.is_valid():
+            try:
+                created_user = User.objects.create_user(**serializer.data)
+                returned_user = UserSerializer(created_user)
+                return Response(returned_user.data, status=status.HTTP_201_CREATED)
+            except IntegrityError:
+                return Response({"msg": "User already exists."}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UserDetail(mixins.RetrieveModelMixin, generics.GenericAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    authentication_classes = (TokenAuthentication, SessionAuthentication)
+    permission_classes = (IsSelf,)
+
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
+
+
+class UserLogin(APIView):
+    queryset = User.objects.all()
+    authentication_classes = (BasicAuthentication, TokenAuthentication)
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request, format=None):
+        serializer = UserSerializer(request.user)
+        return Response(serializer.data)
+
+
+class ChangePasswordView(APIView):
+    '''
+    Changes a user's password
+    '''
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    authentication_classes = (TokenAuthentication, SessionAuthentication)
+    permission_classes = (IsSelf,)
+
+    def post(self, request, *args, **kwargs):
+        user = request.user
+        serializer = PasswordSerializer(data=request.DATA)
+        if not serializer.data['new_password'] == serializer.data['confirmation_password']:
+            return Response({"msg": "password and confirmation password dont match."},
+                            status=status.HTTP_400_BAD_REQUEST)
+        if serializer.is_valid():
+            user.set_password(serializer.data['new_password'])
+            user.save()
+            return Response({'msg': 'password set'}, status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ScoreViewSet(viewsets.ModelViewSet):
