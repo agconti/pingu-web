@@ -1,7 +1,9 @@
-from core.models import Match, Score, Ranking
+from core.models import Match, Ranking
 from users.models import User
-from api.serializers import MatchSerializer, UserSerializer, ScoreSerializer, RankingSerializer
+from api.serializers import (MatchSerializer, UserSerializer, RankingSerializer,
+    CreateUserSerializer, PasswordSerializer)
 from django.db import IntegrityError
+from rest_framework.response import Response
 from rest_framework import mixins, generics, status, viewsets
 from rest_framework.authentication import TokenAuthentication, BasicAuthentication, SessionAuthentication
 from rest_framework.views import APIView
@@ -19,6 +21,29 @@ class MatchViewSet(viewsets.ModelViewSet):
     serializer_class = MatchSerializer
     authentication_classes = (TokenAuthentication, SessionAuthentication, BasicAuthentication)
     permission_classes = (IsAuthenticated,)
+
+
+class MatchResultsView(APIView):
+    """
+    Create the match and score records from a fierce ping pong match.
+    """
+    queryset = Ranking.objects.all()
+    serializer_class = MatchSerializer
+    authentication_classes = (TokenAuthentication, SessionAuthentication, BasicAuthentication)
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request):
+        serializer = MatchSerializer(data=request.DATA)
+        if serializer.is_valid():
+            try:
+
+                user_ranking = Ranking.objects.get(player=request.user)
+                user_ranking.save(match=serializer.object)
+                user_ranking = RankingSerializer(user_ranking)
+                return Response(user_ranking.data, status=status.HTTP_201_CREATED)
+            except IntegrityError:
+                return Response({"msg": "User does not exist."}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class UserList(mixins.CreateModelMixin, generics.GenericAPIView):
@@ -85,17 +110,6 @@ class ChangePasswordView(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class ScoreViewSet(viewsets.ModelViewSet):
-    """
-    This viewset automatically provides `list`, `create`, `retrieve`,
-    `update` and `destroy` actions.
-    """
-    queryset = Score.objects.all()
-    serializer_class = ScoreSerializer
-    authentication_classes = (TokenAuthentication, SessionAuthentication, BasicAuthentication)
-    permission_classes = (IsAuthenticated,)
-
-
 class RankingViewSet(viewsets.ModelViewSet):
     """
     This viewset automatically provides `list`, `create`, `retrieve`,
@@ -105,10 +119,3 @@ class RankingViewSet(viewsets.ModelViewSet):
     serializer_class = RankingSerializer
     authentication_classes = (TokenAuthentication, SessionAuthentication, BasicAuthentication)
     permission_classes = (IsAuthenticated,)
-
-    def post(self, request):
-        serializer = RankingSerializer(request.DATA)
-        if serializer.is_valid():
-            serializer.save()
-            return Response({"msg": "Ranking Updated."}, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
