@@ -1,6 +1,12 @@
 from rest_framework import serializers
-from core.models import Match, Score, Ranking
+from core.models import Match, Ranking
 from users.models import User
+
+
+class RankingSerializer(serializers.HyperlinkedModelSerializer):
+
+    class Meta:
+        model = Ranking
 
 
 class MatchSerializer(serializers.HyperlinkedModelSerializer):
@@ -9,27 +15,28 @@ class MatchSerializer(serializers.HyperlinkedModelSerializer):
         model = Match
 
 
-class ScoreSerializer(serializers.HyperlinkedModelSerializer):
-
-    class Meta:
-        model = Score
-
-
-class RankingSerializer(serializers.HyperlinkedModelSerializer):
-    match = MatchSerializer(read_only=True)
-
-    class Meta:
-        model = Ranking
-        fields = ('player', 'elo_rating', 'best_score', 'worst_score',
-                  'heighest_ranking', 'match')
-
-
 class UserSerializer(serializers.HyperlinkedModelSerializer):
-    match = MatchSerializer(many=True, read_only=True)
-    ranking = RankingSerializer(many=True, read_only=True)
     auth_token = serializers.SlugRelatedField(read_only=True, slug_field='key')
 
     class Meta:
         model = User
-        fields = ('url', 'first_name', 'last_name', 'match', 'ranking',
-                  'username', 'auth_token')
+        fields = ('url', 'first_name', 'last_name', 'username', 'auth_token')
+
+
+class CreateUserSerializer(serializers.Serializer):
+    email = serializers.CharField()
+    password = serializers.CharField()
+    first_name = serializers.CharField()
+    last_name = serializers.CharField()
+
+    class Meta:
+        fields = ("email", "password", "first_name", "last_name")
+
+
+class PasswordSerializer(serializers.Serializer):
+    password = serializers.CharField()
+    confirmation_password = serializers.CharField()
+    new_password = serializers.CharField()
+
+    class Meta:
+        fields = ('password', 'confirmation_password', 'new_password')
