@@ -17,10 +17,10 @@ class Score(TimeStampedModel):
 
 class Ranking(TimeStampedModel):
     player = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="rank")
-    elo_rating = models.IntegerField(default=1400)
+    elo_rating = models.FloatField(default=1400)
     best_score_differential = models.FloatField(default=0)
-    worst_score_differential = models.IntegerField(default=0)
-    heighest_ranking = models.IntegerField(default=0)
+    worst_score_differential = models.FloatField(default=0)
+    heighest_ranking = models.FloatField(default=0)
 
     def save(self, match, *args, **kwargs):
         '''
