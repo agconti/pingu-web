@@ -1,6 +1,7 @@
 from model_utils.models import TimeStampedModel
 from django.db import models
 from config import settings
+
 import math
 
 
@@ -17,6 +18,9 @@ class Ranking(TimeStampedModel):
     best_score_differential = models.FloatField(default=0)
     worst_score_differential = models.FloatField(default=0)
     heighest_ranking = models.FloatField(default=0)
+
+    class Meta:
+        ordering = ['elo_rating']
 
     def save(self, match=None, *args, **kwargs):
         '''
@@ -65,3 +69,30 @@ class Ranking(TimeStampedModel):
     def calculate_heighest_ranking(self):
         if self.heighest_ranking < self.elo_rating:
             self.heighest_ranking = self.elo_rating
+
+    def create_thumbnail(self, size, quality=None):
+        # invalidate the cache of the thumbnail with the given size first
+        invalidate_cache(self.user, size)
+        try:
+            orig = self.avatar.storage.open(self.avatar.name, 'rb')
+            image = Image.open(orig)
+            quality = quality or settings.AVATAR_THUMB_QUALITY
+            w, h = image.size
+            if w != size or h != size:
+                if w > h:
+                    diff = int((w - h) / 2)
+                    image = image.crop((diff, 0, w - diff, h))
+                else:
+                    diff = int((h - w) / 2)
+                    image = image.crop((0, diff, w, h - diff))
+                if image.mode != "RGB":
+                    image = image.convert("RGB")
+                image = image.resize((size, size), settings.AVATAR_RESIZE_METHOD)
+                thumb = six.BytesIO()
+                image.save(thumb, settings.AVATAR_THUMB_FORMAT, quality=quality)
+                thumb_file = ContentFile(thumb.getvalue())
+            else:
+                thumb_file = File(orig)
+            thumb = self.avatar.storage.save(self.avatar_name(size), thumb_file)
+        except IOError:
+            return  # What should we do here?  Render a "sorry, didn't work" img?
