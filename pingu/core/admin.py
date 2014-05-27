@@ -1,10 +1,5 @@
 from django.contrib import admin
-from .models import Match, Score, Ranking
-
-
-class ScoreAdmin(admin.ModelAdmin):
-    class Meta:
-        model = Score
+from .models import Match, Ranking
 
 
 class MatchAdmin(admin.ModelAdmin):
@@ -17,6 +12,5 @@ class RankingAdmin(admin.ModelAdmin):
         model = Ranking
 
 
-admin.site.register(Score, ScoreAdmin)
 admin.site.register(Match, MatchAdmin)
 admin.site.register(Ranking, RankingAdmin)

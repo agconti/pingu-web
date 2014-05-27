@@ -7,12 +7,8 @@ import math
 class Match(TimeStampedModel):
     winner = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="won_matches")
     loser = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="lost_matches")
-
-
-class Score(TimeStampedModel):
-    match = models.ForeignKey(Match, related_name="score")
-    player = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="scores")
-    match_score = models.IntegerField()
+    winner_score = models.IntegerField()
+    loser_score = models.IntegerField()
 
 
 class Ranking(TimeStampedModel):
@@ -22,15 +18,17 @@ class Ranking(TimeStampedModel):
     worst_score_differential = models.FloatField(default=0)
     heighest_ranking = models.FloatField(default=0)
 
-    def save(self, match, *args, **kwargs):
+    def save(self, match=None, *args, **kwargs):
         '''
         Updates a user's ranking with a match.
         '''
+        if match is None:
+            return super(Ranking, self).save(*args, **kwargs)
         self.calculate_elo_rating(match)
         if match.winner == self.player:
-            self.calculate_best_score(match)
+            self.calculate_best_score_differential(match)
         else:
-            self.calculate_worst_score(match)
+            self.calculate_worst_score_differential(match)
         self.calculate_heighest_ranking()
         super(Ranking, self).save(*args, **kwargs)
 
@@ -42,9 +40,9 @@ class Ranking(TimeStampedModel):
         loss_value = 0
         kfactor = 32
         if match.winner == self.player:
-            rank_difference = self.elo_rating - match.loser.rank.elo_rating
+            rank_difference = self.elo_rating - match.loser.rank.model().elo_rating
         else:
-            rank_difference = self.elo_rating - match.winner.rank.elo_rating
+            rank_difference = self.elo_rating - match.winner.rank.model().elo_rating
         win_chance = 1 / (1 + (math.pow(10, (rank_difference / 400))))
         self.elo_rating = self.elo_rating + kfactor * (win_value - win_chance)
 
