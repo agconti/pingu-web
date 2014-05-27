@@ -4,9 +4,13 @@ from users.models import User
 
 
 class RankingSerializer(serializers.HyperlinkedModelSerializer):
+    player_username = serializers.Field(source='player.username')
 
     class Meta:
         model = Ranking
+        fields = ("url", "player", 'player_username', "elo_rating",
+                  "best_score_differential", "worst_score_differential",
+                  "heighest_ranking")
 
 
 class MatchSerializer(serializers.HyperlinkedModelSerializer):
