@@ -35,29 +35,29 @@ def syncdb():
     """fab [environment] syncdb"""
     require('environment')
     if(env.environment == "dev"):
-        local('heroku run python feedme/manage.py syncdb')
+        local('heroku run python pingu/manage.py syncdb')
     else:
-        local('heroku run python feedme/manage.py syncdb --remote %s' % env.environment)
+        local('heroku run python pingu/manage.py syncdb --remote %s' % env.environment)
 
 
 def migrate(app=None):
     """fab [environment] migrate"""
     require('environment')
     if(app is not None):
-        local('heroku run python feedme/manage.py migrate %s --remote %s' % (app, env.environment))
+        local('heroku run python pingu/manage.py migrate %s --remote %s' % (app, env.environment))
     else:
-        local('heroku run python feedme/manage.py migrate --remote %s' % env.environment)
+        local('heroku run python pingu/manage.py migrate --remote %s' % env.environment)
 
 
 def collectstatic(app=None):
     """fab [environment] collectstatic"""
     require('environment')
-    local('heroku run python feedme/manage.py collectstatic --noinput --remote %s' % env.environment)
+    local('heroku run python pingu/manage.py collectstatic --noinput --remote %s' % env.environment)
 
 
 def schemamigration(app):
     """fab schemamigration:[app]"""
-    local('foreman run "python feedme/manage.py schemamigration %s --auto"' % app)
+    local('foreman run "python pingu/manage.py schemamigration %s --auto"' % app)
 
 
 def ps():
