@@ -36,9 +36,10 @@ class MatchResultsView(APIView):
         serializer = MatchSerializer(data=request.DATA)
         if serializer.is_valid():
             try:
-
-                user_ranking = Ranking.objects.get(player=request.user)
-                user_ranking.save(match=serializer.object)
+                match = serializer.object
+                for match_user in [match.loser, match.winner]:
+                    user_ranking = Ranking.objects.get(player=match_user)
+                    user_ranking.save(match=match)
                 user_ranking = RankingSerializer(user_ranking)
                 return Response(user_ranking.data, status=status.HTTP_201_CREATED)
             except IntegrityError:
@@ -82,8 +83,8 @@ class UserLogin(APIView):
     authentication_classes = (BasicAuthentication, TokenAuthentication)
     permission_classes = (IsAuthenticated,)
 
-    def post(self, request, format=None):
-        serializer = UserSerializer(request.user)
+    def get(self, request, format=None):
+        serializer = UserSerializer(request.user, context={'request': request})
         return Response(serializer.data)
 
 

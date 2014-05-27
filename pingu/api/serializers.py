@@ -18,11 +18,12 @@ class MatchSerializer(serializers.HyperlinkedModelSerializer):
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     auth_token = serializers.SlugRelatedField(read_only=True,
                                               slug_field='key')
+    rank = RankingSerializer(read_only=True)
 
     class Meta:
         model = User
         fields = ('url', 'first_name', 'last_name', 'username',
-                  'auth_token')
+                  'rank', 'auth_token')
 
 
 class CreateUserSerializer(serializers.Serializer):
