@@ -50,21 +50,17 @@ class Ranking(TimeStampedModel):
         """
         Needs to be refactored to differential
         """
-        winner_score = match.score.winner
-        looser_score = match.score.loser
-        differential = (winner_score - looser_score) / winner_score
-        if self.best_score > differential:
-            self.best_score = differential
+        differential = (match.winner_score - match.loser_score) / match.winner_score
+        if self.best_score_differential > differential:
+            self.best_score_differential = differential
 
     def calculate_worst_score_differential(self, match):
         """
         Needs to be refactored to differential
         """
-        winner_score = match.score.winner
-        looser_score = match.score.loser
-        differential = (winner_score - looser_score) / winner_score
-        if self.worst_score < differential:
-            self.worst_score = differential
+        differential = (match.winner_score - match.loser_score) / match.winner_score
+        if self.worst_score_differential < differential:
+            self.worst_score_differential = differential
 
     def calculate_heighest_ranking(self):
         if self.heighest_ranking < self.elo_rating:
