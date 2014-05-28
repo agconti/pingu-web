@@ -56,6 +56,9 @@ class MatchResultsView(APIView):
             try:
                 match = serializer.object
                 for match_user in [match.loser, match.winner]:
+                    # Ranking objects are created automatically when users are.
+                    # It should never be the case that a user does not have an
+                    # asscoiated ranking object.
                     user_ranking = Ranking.objects.get(player=match_user)
                     user_ranking.save(match=match)
                 user_ranking = RankingSerializer(user_ranking)
