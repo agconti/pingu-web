@@ -3,13 +3,31 @@ from users.models import User
 from api.serializers import (MatchSerializer, UserSerializer, RankingSerializer,
     CreateUserSerializer, PasswordSerializer)
 from django.db import IntegrityError
-from rest_framework.response import Response
-from rest_framework import mixins, generics, status, viewsets
-from rest_framework.authentication import TokenAuthentication, BasicAuthentication, SessionAuthentication
+from rest_framework import status, mixins, generics, parsers, renderers, viewsets
 from rest_framework.views import APIView
+from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.authentication import TokenAuthentication, BasicAuthentication, SessionAuthentication
+from rest_framework.authtoken.models import Token
+from rest_framework.authtoken.serializers import AuthTokenSerializer
 from .authentication import UnsafeSessionAuthentication
 from .permissions import IsSelf
+
+
+class ObtainAuthTokenView(APIView):
+    throttle_classes = ()
+    permission_classes = ()
+    parser_classes = (parsers.FormParser, parsers.MultiPartParser, parsers.JSONParser,)
+    renderer_classes = (renderers.JSONRenderer,)
+    serializer_class = AuthTokenSerializer
+    model = Token
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.DATA)
+        if serializer.is_valid():
+            token, created = Token.objects.get_or_create(user=serializer.object['user'])
+            return Response({'auth_token': token.key})
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class MatchViewSet(viewsets.ModelViewSet):

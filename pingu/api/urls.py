@@ -9,7 +9,7 @@ router.register(r'rankings', views.RankingViewSet)
 urlpatterns = patterns('',
     url(r'^', include(router.urls)),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    url(r'^api-token-auth/', 'rest_framework.authtoken.views.obtain_auth_token'),
+    url(r'^api-token-auth/', views.ObtainAuthTokenView.as_view(), name="auth-token"),
     url(r'^users/$', views.UserList.as_view(), name='user-list'),
     url(r'^users/login/?$', views.UserLogin.as_view(), name='user-login'),
     url(r'^users/(?P<pk>[0-9]+)/$', views.UserDetail.as_view(), name='user-detail'),
