@@ -116,7 +116,7 @@ class UserDetail(mixins.RetrieveModelMixin, generics.GenericAPIView):
 
 class UserLogin(APIView):
     queryset = User.objects.all()
-    authentication_classes = (TokenAuthentication)
+    authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
 
     def get(self, request, format=None):
@@ -130,7 +130,7 @@ class ChangePasswordView(APIView):
     '''
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    authentication_classes = (TokenAuthentication)
+    authentication_classes = (TokenAuthentication,)
     permission_classes = (IsSelf,)
 
     def post(self, request, *args, **kwargs):
