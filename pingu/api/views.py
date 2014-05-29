@@ -61,8 +61,9 @@ class MatchResultsView(APIView):
                     # asscoiated ranking object.
                     user_ranking = Ranking.objects.get(player=match_user)
                     user_ranking.save(match=match)
-                user_ranking = RankingSerializer(user_ranking)
-                return Response(user_ranking.data, status=status.HTTP_201_CREATED)
+                    if match_user == request.user:
+                        updated_ranking = RankingSerializer(user_ranking)
+                return Response(updated_ranking.data, status=status.HTTP_201_CREATED)
             except IntegrityError:
                 return Response({"msg": "User does not exist."}, status=status.HTTP_400_BAD_REQUEST)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
