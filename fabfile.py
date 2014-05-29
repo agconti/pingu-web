@@ -34,10 +34,7 @@ def push():
 def syncdb():
     """fab [environment] syncdb"""
     require('environment')
-    if(env.environment == "dev"):
-        local('heroku run python pingu/manage.py syncdb')
-    else:
-        local('heroku run python pingu/manage.py syncdb --remote %s' % env.environment)
+    local('heroku run python pingu/manage.py syncdb --remote %s' % env.environment)
 
 
 def migrate(app=None):
