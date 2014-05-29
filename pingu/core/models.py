@@ -24,7 +24,7 @@ class Ranking(TimeStampedModel):
 
     def save(self, match=None, *args, **kwargs):
         '''
-        Updates a user's ranking with a match.
+        Updates a user's ranking after a given match.
         '''
         if match is None:
             return super(Ranking, self).save(*args, **kwargs)
@@ -57,13 +57,13 @@ class Ranking(TimeStampedModel):
         self.elo_rating = self.elo_rating + kfactor * (win_loss_modifer - win_chance)
 
     def calculate_best_score_differential(self, match):
-        total_points_scored = sum([match.winner_score, match.loser_score])
+        total_points_scored = match.winner_score + match.loser_score
         differential = (match.winner_score - match.loser_score) / total_points_scored
         if self.best_score_differential > differential:
             self.best_score_differential = differential
 
     def calculate_worst_score_differential(self, match):
-        total_points_scored = sum([match.winner_score, match.loser_score])
+        total_points_scored = match.winner_score + match.loser_score
         differential = 1 - (match.winner_score - match.loser_score) / total_points_scored
         if self.worst_score_differential < differential:
             self.worst_score_differential = differential

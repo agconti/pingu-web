@@ -8,7 +8,7 @@ class RankingSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Ranking
-        fields = ("url", "player", 'player_username', "elo_rating",
+        fields = ("url", "player", "player_username", "elo_rating",
                   "best_score_differential", "worst_score_differential",
                   "heighest_ranking")
 
@@ -26,8 +26,8 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = User
-        fields = ('url', 'first_name', 'last_name', 'username',
-                  'rank', 'auth_token')
+        fields = ("url", "first_name", "last_name", "username",
+                  "rank", "auth_token")
 
 
 class CreateUserSerializer(serializers.Serializer):
@@ -48,5 +48,5 @@ class PasswordSerializer(serializers.Serializer):
     new_password = serializers.CharField()
 
     class Meta:
-        fields = ('password', 'confirmation_password',
-                  'new_password')
+        fields = ("password", "confirmation_password'",
+                  "new_password")

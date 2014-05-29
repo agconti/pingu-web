@@ -15,6 +15,9 @@ from .permissions import IsSelf
 
 
 class ObtainAuthTokenView(APIView):
+    '''
+    Allows a user to Obtain an auth_token after authenticating.
+    '''
     throttle_classes = ()
     permission_classes = ()
     parser_classes = (parsers.FormParser, parsers.MultiPartParser, parsers.JSONParser,)
@@ -31,10 +34,10 @@ class ObtainAuthTokenView(APIView):
 
 
 class MatchViewSet(viewsets.ModelViewSet):
-    """
+    '''
     This viewset automatically provides `list`, `create`, `retrieve`,
     `update` and `destroy` actions.
-    """
+    '''
     queryset = Match.objects.all()
     serializer_class = MatchSerializer
     authentication_classes = (TokenAuthentication, SessionAuthentication, BasicAuthentication)
@@ -42,9 +45,9 @@ class MatchViewSet(viewsets.ModelViewSet):
 
 
 class MatchResultsView(APIView):
-    """
-    Create the match and score records from a fierce ping pong match.
-    """
+    '''
+    Creates a match and updates rankings after a fierce ping pong match.
+    '''
     queryset = Ranking.objects.all()
     serializer_class = MatchSerializer
     authentication_classes = (TokenAuthentication, SessionAuthentication, BasicAuthentication)
@@ -63,16 +66,16 @@ class MatchResultsView(APIView):
                     user_ranking.save(match=match)
                     if match_user == request.user:
                         updated_ranking = RankingSerializer(user_ranking)
-                return Response(updated_ranking.data, status=status.HTTP_201_CREATED)
+                return Response(updated_ranking.data, status=status.HTTP_200_OK)
             except IntegrityError:
                 return Response({"msg": "User does not exist."}, status=status.HTTP_400_BAD_REQUEST)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class UserList(mixins.CreateModelMixin, generics.GenericAPIView):
-    """
+    '''
     This view generates a list of users and upon posting.
-    """
+    '''
     queryset = User.objects.all()
     authentication_classes = (UnsafeSessionAuthentication,)
     serializer_class = UserSerializer
@@ -134,10 +137,10 @@ class ChangePasswordView(APIView):
 
 
 class RankingViewSet(viewsets.ModelViewSet):
-    """
+    '''
     This viewset automatically provides `list`, `create`, `retrieve`,
     `update` and `destroy` actions.
-    """
+    '''
     queryset = Ranking.objects.all()
     serializer_class = RankingSerializer
     authentication_classes = (TokenAuthentication, SessionAuthentication, BasicAuthentication)
