@@ -58,14 +58,14 @@ class Ranking(TimeStampedModel):
 
     def calculate_best_score_differential(self, match):
         total_points_scored = match.winner_score + match.loser_score
-        differential = (match.winner_score - match.loser_score) / total_points_scored
-        if self.best_score_differential > differential:
+        differential = 1 - (match.winner_score - match.loser_score) / total_points_scored
+        if self.best_score_differential < differential:
             self.best_score_differential = differential
 
     def calculate_worst_score_differential(self, match):
         total_points_scored = match.winner_score + match.loser_score
-        differential = 1 - (match.winner_score - match.loser_score) / total_points_scored
-        if self.worst_score_differential < differential:
+        differential = (match.winner_score - match.loser_score) / total_points_scored
+        if self.worst_score_differential > differential:
             self.worst_score_differential = differential
 
     def calculate_heighest_ranking(self):
