@@ -95,7 +95,7 @@ class Common(Configuration):
     # See: https://docs.djangoproject.com/en/dev/ref/settings/#secret-key
     # Note: This key only used for development and testing.
     #       In production, this is changed to a values.SecretValue() setting
-    SECRET_KEY = "314i*8v^8t8m4pv*jpiy4!e)$25_++(@b_&df^+uj5vs#+=_j"
+    SECRET_KEY = "314i*8v^8t8m4pv*jpiy425_++(@b_&df^+uj5vs#+=_j"
     ########## END SECRET CONFIGURATION
 
     ########## FIXTURE CONFIGURATION
