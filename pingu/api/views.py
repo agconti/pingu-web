@@ -7,7 +7,7 @@ from rest_framework import status, mixins, generics, parsers, renderers, viewset
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
-from rest_framework.authentication import TokenAuthentication, BasicAuthentication, SessionAuthentication
+from rest_framework.authentication import TokenAuthentication, SessionAuthentication
 from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.serializers import AuthTokenSerializer
 from .authentication import UnsafeSessionAuthentication
@@ -40,7 +40,18 @@ class MatchViewSet(viewsets.ModelViewSet):
     '''
     queryset = Match.objects.all()
     serializer_class = MatchSerializer
-    authentication_classes = (TokenAuthentication, SessionAuthentication, BasicAuthentication)
+    authentication_classes = (TokenAuthentication, SessionAuthentication)
+    permission_classes = (IsAuthenticated,)
+
+
+class RankingViewSet(viewsets.ModelViewSet):
+    '''
+    This viewset automatically provides `list`, `create`, `retrieve`,
+    `update` and `destroy` actions.
+    '''
+    queryset = Ranking.objects.all()
+    serializer_class = RankingSerializer
+    authentication_classes = (TokenAuthentication, SessionAuthentication)
     permission_classes = (IsAuthenticated,)
 
 
@@ -50,7 +61,7 @@ class MatchResultsView(APIView):
     '''
     queryset = Ranking.objects.all()
     serializer_class = MatchSerializer
-    authentication_classes = (TokenAuthentication, SessionAuthentication, BasicAuthentication)
+    authentication_classes = (TokenAuthentication, SessionAuthentication)
     permission_classes = (IsAuthenticated,)
 
     def post(self, request):
@@ -105,7 +116,7 @@ class UserDetail(mixins.RetrieveModelMixin, generics.GenericAPIView):
 
 class UserLogin(APIView):
     queryset = User.objects.all()
-    authentication_classes = (BasicAuthentication, TokenAuthentication)
+    authentication_classes = (TokenAuthentication)
     permission_classes = (IsAuthenticated,)
 
     def get(self, request, format=None):
@@ -119,7 +130,7 @@ class ChangePasswordView(APIView):
     '''
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    authentication_classes = (TokenAuthentication, SessionAuthentication)
+    authentication_classes = (TokenAuthentication)
     permission_classes = (IsSelf,)
 
     def post(self, request, *args, **kwargs):
@@ -134,14 +145,3 @@ class ChangePasswordView(APIView):
             return Response({'msg': 'password set'}, status=status.HTTP_200_OK)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class RankingViewSet(viewsets.ModelViewSet):
-    '''
-    This viewset automatically provides `list`, `create`, `retrieve`,
-    `update` and `destroy` actions.
-    '''
-    queryset = Ranking.objects.all()
-    serializer_class = RankingSerializer
-    authentication_classes = (TokenAuthentication, SessionAuthentication, BasicAuthentication)
-    permission_classes = (IsAuthenticated,)
