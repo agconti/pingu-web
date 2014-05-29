@@ -70,18 +70,17 @@ Run these commands to deploy the project to Heroku:
 .. code-block:: bash
 
     heroku create --buildpack https://github.com/heroku/heroku-buildpack-python
-    git remote rename heroku staging
-    heroku addons:add heroku-postgresql:dev --remote staging
-    heroku addons:add pgbackups --remote staging
-    heroku addons:add sendgrid:starter --remote staging
-    heroku addons:add memcachier:dev --remote staging
-    heroku pg:promote HEROKU_POSTGRESQL_COLOR --remote staging
-    heroku config:set DJANGO_CONFIGURATION=Production --remote staging
-    heroku config:set DJANGO_SECRET_KEY="314i*8v^8t8m4pv*jpiy425_++(@b_&df^+uj5vs#+=_j" --remote staging
-    heroku config:set DJANGO_AWS_ACCESS_KEY_ID=AKIAIDJBPN5KDPRBFFRQ --remote staging
-    heroku config:set DJANGO_AWS_SECRET_ACCESS_KEY=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 --remote staging
-    heroku config:set DJANGO_AWS_STORAGE_BUCKET_NAME=pingu-staging --remote staging
-    git push staging master
-    heroku run python pingu/manage.py syncdb --noinput --settings=config.settings --remote staging
-    heroku run python pingu/manage.py migrate --settings=config.settings  --remote staging
-    heroku run python pingu/manage.py collectstatic --settings=config.settings --remote staging
+    heroku addons:add heroku-postgresql:dev
+    heroku addons:add pgbackups
+    heroku addons:add sendgrid:starter
+    heroku addons:add memcachier:dev
+    heroku pg:promote HEROKU_POSTGRESQL_COLOR
+    heroku config:set DJANGO_CONFIGURATION=Production
+    heroku config:set DJANGO_SECRET_KEY=RANDOM_SECRET_KEY
+    heroku config:set DJANGO_AWS_ACCESS_KEY_ID=YOUR_ID
+    heroku config:set DJANGO_AWS_SECRET_ACCESS_KEY=YOUR_KEY
+    heroku config:set DJANGO_AWS_STORAGE_BUCKET_NAME=BUCKET
+    git push heroku master
+    heroku run python pingu/manage.py syncdb --noinput --settings=config.settings
+    heroku run python pingu/manage.py migrate --settings=config.settings
+    heroku run python pingu/manage.py collectstatic --settings=config.settings
