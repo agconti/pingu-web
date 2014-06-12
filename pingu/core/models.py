@@ -11,12 +11,16 @@ class Match(TimeStampedModel):
     winner_score = models.IntegerField()
     loser_score = models.IntegerField()
 
+    def __unicode__(self):
+        return "Match %s vs %s %s-%s" %(self.winner, self.loser, self.winner_score,
+                                        self.loser_score)
+
 
 class Ranking(TimeStampedModel):
     player = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="rank")
     elo_rating = models.FloatField(default=1400)
     best_score_differential = models.FloatField(default=0)
-    worst_score_differential = models.FloatField(default=0)
+    worst_score_differential = models.FloatField(default=1)
     heighest_ranking = models.FloatField(default=0)
 
     class Meta:
@@ -58,16 +62,23 @@ class Ranking(TimeStampedModel):
 
     def calculate_best_score_differential(self, match):
         total_points_scored = match.winner_score + match.loser_score
-        differential = (match.winner_score - match.loser_score) / total_points_scored
-        if self.best_score_differential > differential:
+        differential = 1 - (match.winner_score - match.loser_score) / float(total_points_scored)
+        print differential
+        if self.best_score_differential < differential:
             self.best_score_differential = differential
+            print self.best_score_differential
 
     def calculate_worst_score_differential(self, match):
         total_points_scored = match.winner_score + match.loser_score
-        differential = 1 - (match.winner_score - match.loser_score) / total_points_scored
-        if self.worst_score_differential < differential:
+        differential = (match.winner_score - match.loser_score) / float(total_points_scored)
+        print differential
+        if self.worst_score_differential > differential:
             self.worst_score_differential = differential
+            print self.worst_score_differential
 
     def calculate_heighest_ranking(self):
         if self.heighest_ranking < self.elo_rating:
             self.heighest_ranking = self.elo_rating
+
+    def __unicode__(self):
+        return "%s's Ranking " % self.player.username
