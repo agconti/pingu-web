@@ -21,7 +21,7 @@ class Ranking(TimeStampedModel):
     elo_rating = models.FloatField(default=1400)
     best_score_differential = models.FloatField(default=0)
     worst_score_differential = models.FloatField(default=1)
-    heighest_ranking = models.FloatField(default=0)
+    heighest_ranking = models.FloatField(default=1400)
 
     class Meta:
         ordering = ['-elo_rating']
