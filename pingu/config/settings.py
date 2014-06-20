@@ -276,6 +276,7 @@ class Common(Configuration):
             'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
         ]
     }
+    AVATAR_STORAGE_DIR = "avatars"
 
 
 class Local(Common):

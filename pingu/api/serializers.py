@@ -27,19 +27,15 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
         fields = ("url", "first_name", "last_name", "username",
-                  "rank", "auth_token")
+                  "rank", "profile_picture", "auth_token")
 
 
-class CreateUserSerializer(serializers.Serializer):
-    username = serializers.CharField()
-    email = serializers.CharField()
-    password = serializers.CharField()
-    first_name = serializers.CharField()
-    last_name = serializers.CharField()
+class CreateUserSerializer(serializers.ModelSerializer):
 
     class Meta:
+        model = User
         fields = ("username", "email", "password", "first_name",
-                  "last_name")
+                  "last_name", "profile_picture")
 
 
 class PasswordSerializer(serializers.Serializer):

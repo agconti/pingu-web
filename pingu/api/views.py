@@ -12,6 +12,8 @@ from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.serializers import AuthTokenSerializer
 from .authentication import UnsafeSessionAuthentication
 from .permissions import IsSelf
+from django.utils.timezone import now
+
 
 
 class ObtainAuthTokenView(APIView):
@@ -93,10 +95,13 @@ class UserList(mixins.CreateModelMixin, generics.GenericAPIView):
     permission_classes = (AllowAny,)
 
     def post(self, request):
-        serializer = CreateUserSerializer(data=request.DATA)
+        serializer = CreateUserSerializer(data=request.DATA, files=request.FILES)
         if serializer.is_valid():
             try:
                 created_user = User.objects.create_user(**serializer.data)
+                created_user.profile_picture.save("%s.png" % now().strftime("%Y%m%d%H%M%S"),
+                                                  serializer.object.profile_picture,
+                                                  save=True)
                 returned_user = UserSerializer(created_user)
                 return Response(returned_user.data, status=status.HTTP_201_CREATED)
             except IntegrityError:
