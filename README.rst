@@ -1,7 +1,7 @@
 pingu-web
 ==============================
 
-Pingu-web is a RESTful API that calculates player or team rankings for any sport. Here at Fueled we're using it to  to track our feirce ping pong games to see how truely is the best in the office. We track the results of matches though our iOS app, which uses Pingu-web as a backend. Scores are calculated through the [ELO](http://en.wikipedia.org/wiki/Elo_rating_system) rating system to allow players of diffrent skills to play each other and still genreate meaningful rankings. 
+Pingu-web is a RESTful API that calculates player or team rankings for any sport. Here at Fueled we're using it to  to track our feirce ping pong games to see how truely is the best in the office. We track the results of matches though our iOS app, which uses Pingu-web as a backend. Scores are calculated through the ELO rating system to allow players of diffrent skills to play each other and still genreate meaningful rankings. 
 
 The backend in written in Python and Django and heavily uses Django Rest-Framework. 
 
